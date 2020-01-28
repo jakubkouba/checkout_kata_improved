@@ -17,18 +17,18 @@ class Checkout
     items_with_count.reduce(0) do |total, (item,count)|
       item_price_rules = price_rules[item]
       unit_price = UnitPrice.new(item_price_rules[:unit_price], item_price_rules[:special_price])
-      if unit_price.discount?
+      total += if unit_price.discount?
         if count == unit_price.discounted_amount
-          total += unit_price.discounted_price
+          unit_price.discounted_price
         elsif count < unit_price.discounted_amount
-          total += count * unit_price.value
+          count * unit_price.value
         elsif count > unit_price.discounted_amount
           special_price_applied_times = count / unit_price.discounted_amount
           unit_price_applied_times = count % unit_price.discounted_amount
-          total += (special_price_applied_times * unit_price.discounted_price) + (unit_price_applied_times * unit_price.value)
+          (special_price_applied_times * unit_price.discounted_price) + (unit_price_applied_times * unit_price.value)
         end
       else
-        total += count * item_price_rules[:unit_price]
+        count * item_price_rules[:unit_price]
       end
       total
     end
