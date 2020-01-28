@@ -14,10 +14,27 @@ class Checkout
   def total
     return 0 if items.empty?
 
-    items.reduce(0) do |total, item|
+    items_with_count.reduce(0) do |total, (item,count)|
       item_price_rules = price_rules[item]
-      total += item_price_rules[:unit_price]
+      if item_price_rules.has_key?(:special_price)
+        if count == item_price_rules[:special_price][:count]
+          total += item_price_rules[:special_price][:price]
+        elsif count < item_price_rules[:special_price][:count]
+          total += count * item_price_rules[:unit_price]
+        end
+      else
+        total += item_price_rules[:unit_price]
+      end
       total
+    end
+  end
+
+  private
+
+  def items_with_count
+    @items_count = items.inject(Hash.new(0)) do |items_count, item|
+      items_count[item] += 1
+      items_count
     end
   end
 end
