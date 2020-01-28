@@ -1,3 +1,5 @@
+require_relative '../lib/checkout'
+
 RSpec.describe 'Test Price' do
 
   subject(:price) do
