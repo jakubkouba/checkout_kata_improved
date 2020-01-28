@@ -29,14 +29,12 @@ class Checkout
   private
 
   def apply_discount(count, unit_price)
-    if count == unit_price.discounted_amount
-      unit_price.discounted_price
-    elsif count < unit_price.discounted_amount
+    if count < unit_price.discounted_amount
       count * unit_price.value
-    elsif count > unit_price.discounted_amount
-      special_price_applied_times = count / unit_price.discounted_amount
-      unit_price_applied_times    = count % unit_price.discounted_amount
-      (special_price_applied_times * unit_price.discounted_price) + (unit_price_applied_times * unit_price.value)
+    else
+      discounted_price = (count / unit_price.discounted_amount) * unit_price.discounted_price
+      price_for_single_units = (count % unit_price.discounted_amount) * unit_price.value
+      discounted_price + price_for_single_units
     end
   end
 
