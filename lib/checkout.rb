@@ -27,7 +27,7 @@ class Checkout
           total += (special_price_applied_times * item_price_rules[:special_price][:price]) + (unit_price_applied_times * item_price_rules[:unit_price])
         end
       else
-        total += item_price_rules[:unit_price]
+        total += count * item_price_rules[:unit_price]
       end
       total
     end
