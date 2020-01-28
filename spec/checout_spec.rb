@@ -31,4 +31,9 @@ RSpec.describe 'Test Price' do
         }
     }
   end
+
+  describe 'when basket is empty' do
+    let(:items_in_basket) { '' }
+    it { is_expected.to eq 0 }
+  end
 end
