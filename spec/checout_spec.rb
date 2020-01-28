@@ -48,4 +48,9 @@ RSpec.describe 'Test Price' do
     let(:items_in_basket) { 'AB' }
     it { is_expected.to eq 80 }
   end
+
+  describe 'when basket contains 3 time product A' do
+    let(:items_in_basket) { 'AAA' }
+    it { is_expected.to eq 130 }
+  end
 end
