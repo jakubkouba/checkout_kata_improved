@@ -18,23 +18,27 @@ class Checkout
       item_price_rules = price_rules[item]
       unit_price = UnitPrice.new(item_price_rules[:unit_price], item_price_rules[:special_price])
       total += if unit_price.discount?
-        if count == unit_price.discounted_amount
-          unit_price.discounted_price
-        elsif count < unit_price.discounted_amount
-          count * unit_price.value
-        elsif count > unit_price.discounted_amount
-          special_price_applied_times = count / unit_price.discounted_amount
-          unit_price_applied_times = count % unit_price.discounted_amount
-          (special_price_applied_times * unit_price.discounted_price) + (unit_price_applied_times * unit_price.value)
-        end
-      else
-        count * item_price_rules[:unit_price]
-      end
+                 apply_discount(count, unit_price)
+               else
+                 count * item_price_rules[:unit_price]
+               end
       total
     end
   end
 
   private
+
+  def apply_discount(count, unit_price)
+    if count == unit_price.discounted_amount
+      unit_price.discounted_price
+    elsif count < unit_price.discounted_amount
+      count * unit_price.value
+    elsif count > unit_price.discounted_amount
+      special_price_applied_times = count / unit_price.discounted_amount
+      unit_price_applied_times    = count % unit_price.discounted_amount
+      (special_price_applied_times * unit_price.discounted_price) + (unit_price_applied_times * unit_price.value)
+    end
+  end
 
   def items_with_count
     @items_count = items.inject(Hash.new(0)) do |items_count, item|
