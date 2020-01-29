@@ -16,9 +16,9 @@ class Checkout
 
     items_with_count.reduce(0) do |total, (item,count)|
       item_price_rules = price_rules[item]
-      unit_price = UnitPrice.new(item_price_rules[:unit_price], item_price_rules[:special_price])
-      total += if unit_price.discount?
-                 apply_discount(count, unit_price)
+      product = Product.new(item_price_rules[:unit_price], item_price_rules[:special_price])
+      total += if product.discount?
+                 apply_discount(count, product)
                else
                  count * item_price_rules[:unit_price]
                end
@@ -46,7 +46,7 @@ class Checkout
   end
 end
 
-class UnitPrice
+class Product
 
   attr_reader :value
 
