@@ -18,25 +18,15 @@ class Checkout
       item_price_rules = price_rules[item]
       product = Product.new(item_price_rules[:unit_price], item_price_rules[:special_price])
       total += if product.discount?
-                 apply_discount(count, product)
+                 product.apply_discount(count)
                else
-                 count * item_price_rules[:unit_price]
+                 count * product.value
                end
       total
     end
   end
 
   private
-
-  def apply_discount(count, unit_price)
-    if count < unit_price.discounted_amount
-      count * unit_price.value
-    else
-      discounted_price = (count / unit_price.discounted_amount) * unit_price.discounted_price
-      price_for_single_units = (count % unit_price.discounted_amount) * unit_price.value
-      discounted_price + price_for_single_units
-    end
-  end
 
   def items_with_count
     @items_count = items.inject(Hash.new(0)) do |items_count, item|
@@ -65,6 +55,16 @@ class Product
 
   def discounted_price
     @discount[:price]
+  end
+
+  def apply_discount(count)
+    if count < discounted_amount
+      count * value
+    else
+      discounted_price = (count / discounted_amount) * self.discounted_price
+      price_for_single_units = (count % discounted_amount) * value
+      discounted_price + price_for_single_units
+    end
   end
 
 end
