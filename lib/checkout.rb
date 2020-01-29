@@ -15,8 +15,7 @@ class Checkout
     return 0 if items.empty?
 
     items_with_count.reduce(0) do |total, (item,count)|
-      item_price_rules = price_rules[item]
-      product = Product.new(item_price_rules[:unit_price], item_price_rules[:special_price])
+      product = Product.new(price_rules[item])
       total += if product.discount?
                  product.apply_discount(count)
                else
@@ -40,9 +39,9 @@ class Product
 
   attr_reader :value
 
-  def initialize(price, discount)
-    @value = price
-    @discount = discount
+  def initialize(price_rule)
+    @value = price_rule[:unit_price]
+    @discount = price_rule[:special_price]
   end
 
   def discount?
