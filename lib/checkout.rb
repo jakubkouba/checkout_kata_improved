@@ -19,7 +19,7 @@ class Checkout
       total += if product.discount?
                  product.apply_discount(count)
                else
-                 count * product.value
+                 count * product.price
                end
       total
     end
@@ -37,10 +37,10 @@ end
 
 class Product
 
-  attr_reader :value
+  attr_reader :price
 
   def initialize(price_rule)
-    @value = price_rule[:unit_price]
+    @price = price_rule[:unit_price]
     @discount = price_rule[:special_price]
   end
 
@@ -58,10 +58,10 @@ class Product
 
   def apply_discount(count)
     if count < discounted_amount
-      count * value
+      count * price
     else
       discounted_price = (count / discounted_amount) * self.discounted_price
-      price_for_single_units = (count % discounted_amount) * value
+      price_for_single_units = (count % discounted_amount) * price
       discounted_price + price_for_single_units
     end
   end
